@@ -11,6 +11,7 @@ import com.udacity.asteroidradar.database.asDomainModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import java.lang.Exception
 
 class AsteroidRepository(private val database: AsteroidDatabase) {
 
@@ -22,12 +23,19 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
     // Responsible for updating the offline cache
     suspend fun refreshAsteroids() {
         withContext(Dispatchers.IO) {
-            val restult = parseAsteroidsJsonResult(
-                JSONObject(
-                    Network.retrofitService.getProperties().await()
+            try {
+                val restult = parseAsteroidsJsonResult(
+                    JSONObject(
+                        Network.retrofitService.getProperties().await()
+                    )
                 )
-            )
-            database.asteroidDao.insertAll(*restult.asDatabaseModel())
+                database.asteroidDao.insertAll(*restult.asDatabaseModel())
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+
+                }
+                e.printStackTrace()
+            }
         }
     }
 }
