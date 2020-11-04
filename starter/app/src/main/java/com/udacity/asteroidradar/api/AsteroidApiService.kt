@@ -25,15 +25,13 @@ private val retrofit = Retrofit.Builder()
 
 
 interface AsteroidApiService {
-    @GET("neo/rest/v1/feed?start_date=2020-11-02&end_date=2020-11-09&$API_KEY")
+    @GET("neo/rest/v1/feed?start_date=2020-11-03&end_date=2020-11-10&$API_KEY")
      fun getProperties(): Deferred<String>
 
     @GET("planetary/apod?$API_KEY")
     fun getImageOfTheDay(): Call<String>
 }
 
-object AsteroidApi {
-    val retrofitService: AsteroidApiService by lazy {
-        retrofit.create(AsteroidApiService::class.java)
-    }
+object Network {
+    val retrofitService: AsteroidApiService by lazy { retrofit.create(AsteroidApiService::class.java) }
 }

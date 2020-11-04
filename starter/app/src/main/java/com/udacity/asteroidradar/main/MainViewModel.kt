@@ -1,22 +1,13 @@
 package com.udacity.asteroidradar.main
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.app.Application
+import androidx.lifecycle.*
 import com.udacity.asteroidradar.Asteroid
-import com.udacity.asteroidradar.api.AsteroidApi
-import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
+import com.udacity.asteroidradar.database.getDatabase
+import com.udacity.asteroidradar.repository.AsteroidRepository
 import kotlinx.coroutines.launch
-import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.await
-import java.lang.Exception
 
-class MainViewModel : ViewModel() {
+class MainViewModel(application: Application) : ViewModel() {
 
     private val _status = MutableLiveData<String>()
     val status: LiveData<String>
@@ -26,47 +17,25 @@ class MainViewModel : ViewModel() {
     val imageOfDay: LiveData<String>
         get() = _imageOfDay
 
-    private val _asteroids = MutableLiveData<List<Asteroid>>()
-    val asteroid: LiveData<List<Asteroid>>
-        get() = _asteroids
-
     private val _navigateToSelectedAsteroid = MutableLiveData<Asteroid>()
     val navigateToSelectedAsteroid: LiveData<Asteroid>
         get() = _navigateToSelectedAsteroid
 
+    private val database = getDatabase(application)
+    private val asteroidsRepository = AsteroidRepository(database)
+
     init {
-        getAsteroidsRealEstateProperties()
+        refreshAsteroid()
     }
 
-    // Get and parse the JSON from API
-    private fun getAsteroidsRealEstateProperties() {
+    val asteroid = asteroidsRepository.asteroid
+
+    private fun refreshAsteroid() {
         viewModelScope.launch {
-            try {
-                val restult = AsteroidApi.retrofitService.getProperties().await()
-                _asteroids.value = parseAsteroidsJsonResult(JSONObject(restult))
-            } catch (e: Exception) {
-                _status.value = "Failure: ${e.message}"
-            }
+            asteroidsRepository.refreshAsteroids()
         }
     }
 
-    private fun getImageOfTheDay() {
-
-        viewModelScope.launch {
-
-            AsteroidApi.retrofitService.getImageOfTheDay().enqueue(object : Callback<String> {
-                override fun onResponse(call: Call<String>, response: Response<String>) {
-                    Log.i("Mylog ", "Success Image")
-                }
-
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    Log.i("Mylog Failed Image:", t.message.toString())
-                }
-
-            })
-
-        }
-    }
 
     fun displayAsteroidDetails(asteroid: Asteroid) {
         _navigateToSelectedAsteroid.value = asteroid
@@ -74,5 +43,15 @@ class MainViewModel : ViewModel() {
 
     fun displayAsteroidComplete() {
         _navigateToSelectedAsteroid.value = null
+    }
+
+    class Factory(val app: Application) : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return MainViewModel(app) as T
+            }
+            throw IllegalArgumentException("Unable to construct viewmodel")
+        }
     }
 }
