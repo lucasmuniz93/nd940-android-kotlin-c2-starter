@@ -13,19 +13,17 @@ class MainViewModel(application: Application) : ViewModel() {
     val status: LiveData<String>
         get() = _status
 
-    private val _imageOfDay = MutableLiveData<String>()
-    val imageOfDay: LiveData<String>
-        get() = _imageOfDay
-
     private val _navigateToSelectedAsteroid = MutableLiveData<Asteroid>()
     val navigateToSelectedAsteroid: LiveData<Asteroid>
         get() = _navigateToSelectedAsteroid
 
     private val database = getDatabase(application)
     private val asteroidsRepository = AsteroidRepository(database)
+    val imageOfDay = asteroidsRepository.pictureOfDay
 
     init {
         refreshAsteroid()
+        refreshPicture()
     }
 
     val asteroid = asteroidsRepository.asteroid
@@ -36,6 +34,11 @@ class MainViewModel(application: Application) : ViewModel() {
         }
     }
 
+    private fun refreshPicture() {
+        viewModelScope.launch {
+            asteroidsRepository.refreshPicture()
+        }
+    }
 
     fun displayAsteroidDetails(asteroid: Asteroid) {
         _navigateToSelectedAsteroid.value = asteroid

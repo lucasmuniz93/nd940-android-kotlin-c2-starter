@@ -1,7 +1,6 @@
 package com.udacity.asteroidradar
 
 import android.app.Application
-import androidx.constraintlayout.solver.state.State
 import androidx.work.*
 import com.udacity.asteroidradar.work.RefreshDataWork
 import kotlinx.coroutines.CoroutineScope
