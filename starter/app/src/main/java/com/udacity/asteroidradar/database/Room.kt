@@ -10,16 +10,33 @@ import com.udacity.asteroidradar.Constants.DATABASE_VERSION
 */
 @Dao
 interface AsteroidDao {
-    @Query("select * from databaseasteroid")
+    @Query("SELECT * FROM databaseasteroid ORDER BY closeApproachDate DESC")
     fun getAsteroid(): LiveData<List<DatabaseAsteroid>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg asteroid: DatabaseAsteroid)
+
+    @Query("DELETE FROM databaseasteroid")
+    fun clear()
 }
 
-@Database(entities = [DatabaseAsteroid::class], version = DATABASE_VERSION)
+@Dao
+interface PictureDao {
+    @Query("SELECT * FROM databasepicture")
+    fun getPictureUrl(): DatabasePicture
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(vararg picture: DatabasePicture)
+
+    @Query("DELETE FROM databasepicture")
+    fun clear()
+}
+
+@Database(entities = [DatabaseAsteroid::class,DatabasePicture::class], version = DATABASE_VERSION)
 abstract class AsteroidDatabase : RoomDatabase() {
     abstract val asteroidDao: AsteroidDao
+
+    abstract val pictureDao: PictureDao
 }
 
 // Returns a singleton instance of database
