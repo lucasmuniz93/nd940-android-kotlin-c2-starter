@@ -24,9 +24,9 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
             it.asDomainModel()
         }
 
-    private val _pictureOfDay = MutableLiveData<String>()
-    val pictureOfDay: LiveData<String>
-        get() = _pictureOfDay
+    val pictureOfDay =  Transformations.map(database.pictureDao.getPictureUrl()) {
+        it.asDomainModel().url
+    }
 
     suspend fun refreshAsteroids() {
         withContext(Dispatchers.IO) {
@@ -59,7 +59,6 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
                 if (imageofDay.mediaType == "image") {
                     database.pictureDao.clear()
                     database.pictureDao.insertAll(imageofDay.asDatabaseModel())
-                    _pictureOfDay.value = database.pictureDao.getPictureUrl().asDomainModel().url
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
