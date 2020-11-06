@@ -48,6 +48,10 @@ class MainViewModel(application: Application) : ViewModel() {
         _navigateToSelectedAsteroid.value = null
     }
 
+    fun onFilterSelect(filter: AsteroidRepository.Query) {
+        asteroidsRepository.applyFilter(filter)
+    }
+
     class Factory(val app: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(MainViewModel::class.java)) {

@@ -14,17 +14,36 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.lang.Exception
+import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
 
 class AsteroidRepository(private val database: AsteroidDatabase) {
 
+    enum class Query(){ SAVED, TODAY, WEEK }
+
+    private val _queryType: MutableLiveData<Query> = MutableLiveData(Query.WEEK)
+    val queryType: LiveData<Query>
+        get() = _queryType
+
     val asteroid: LiveData<List<Asteroid>> =
-        Transformations.map(database.asteroidDao.getAsteroid()) {
-            it.asDomainModel()
+        Transformations.switchMap(queryType) {
+            when (it) {
+                Query.SAVED -> Transformations.map(database.asteroidDao.getAsteroid()) {
+                    it.asDomainModel()
+                }
+                Query.TODAY -> Transformations.map(database.asteroidDao.getTodayAsteroids()) {
+                    it.asDomainModel()
+                }
+                Query.WEEK -> Transformations.map(database.asteroidDao.getWeekAsteroids()) {
+                    it.asDomainModel()
+                }
+                else -> throw IllegalArgumentException("incompatible query type")
+            }
         }
 
-    val pictureOfDay =  Transformations.map(database.pictureDao.getPictureUrl()) {
+
+    val pictureOfDay = Transformations.map(database.pictureDao.getPictureUrl()) {
         it.asDomainModel().url
     }
 
@@ -82,5 +101,9 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
         val currentTime = calendar.time
         val dateFormat = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
         return dateFormat.format(currentTime)
+    }
+
+    fun applyFilter(filter: Query) {
+        _queryType.value = filter
     }
 }
