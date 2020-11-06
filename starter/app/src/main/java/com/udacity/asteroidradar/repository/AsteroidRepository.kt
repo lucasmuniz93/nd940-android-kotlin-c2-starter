@@ -31,11 +31,9 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
     suspend fun refreshAsteroids() {
         withContext(Dispatchers.IO) {
             try {
-//                val restultNetwork = Network.retrofitService.getProperties(
-//                    getStartDateFormatted(),
-//                    getEndDateFormatted()
-//                ).await()
                 val restultNetwork = Network.retrofitService.getProperties(
+                    startDate = getStartDateFormatted(),
+                    endDate = getEndDateFormatted()
                 ).await()
 
                 val resultJSONObject = JSONObject(restultNetwork)
