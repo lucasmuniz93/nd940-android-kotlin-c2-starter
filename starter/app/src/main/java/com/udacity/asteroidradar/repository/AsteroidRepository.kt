@@ -49,7 +49,7 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
         get() = _status
 
     val pictureOfDay: LiveData<PictureOfDay> = Transformations.map(getPicture()) {
-        it.asDomainModel()
+        it?.asDomainModel()
     }
 
     private fun getPicture(): LiveData<DatabasePicture> {
