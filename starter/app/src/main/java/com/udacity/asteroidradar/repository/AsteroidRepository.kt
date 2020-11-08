@@ -48,11 +48,15 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
         get() = _status
 
     val pictureOfDay = Transformations.map(getPicture()) {
-        it.asDomainModel().url
+        it.let {
+            it.asDomainModel().url
+        }
     }
 
     val pictureOfDayDescription = Transformations.map(getPicture()) {
-        it.asDomainModel().title
+        it.let {
+            it.asDomainModel().title
+        }
     }
 
     private fun getPicture(): LiveData<DatabasePicture> {
@@ -77,14 +81,14 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
                     database.pictureDao.clear()
                     database.pictureDao.insertAll(imageofDay.asDatabaseModel())
                 }
-                _status.value = false
+                _status.postValue(false)
                 // Clear the database to remove old dates before insert new ones
                 database.asteroidDao.clear()
                 database.asteroidDao.insertAll(*resultParsed.asDatabaseModel())
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Log.e("Error refresh asteroid ", e.message!!)
-                    _status.value = false
+                    _status.postValue(false)
                 }
                 e.printStackTrace()
             }
