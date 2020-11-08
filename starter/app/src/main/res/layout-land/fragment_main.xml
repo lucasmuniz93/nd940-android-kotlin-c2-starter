@@ -30,12 +30,12 @@
 
             <ImageView
                 android:id="@+id/activity_main_image_of_the_day"
-                android:layout_width="364dp"
+                android:layout_width="@dimen/picture_landscape_width"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
-                android:contentDescription="@{viewModel.imageOfDayDescription}"
+                android:contentDescription="@{viewModel.picOfDay.title}"
                 android:scaleType="centerCrop"
-                app:imageSrcUrl="@{viewModel.imageOfDay}"
+                app:imageSrcUrl="@{viewModel.picOfDay.url}"
                 app:srcCompat="@drawable/placeholder_picture_of_day" />
 
             <TextView

@@ -9,25 +9,20 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application) : ViewModel() {
 
-    private val _status = MutableLiveData<String>()
-    val status: LiveData<String>
-        get() = _status
-
     private val _navigateToSelectedAsteroid = MutableLiveData<Asteroid>()
     val navigateToSelectedAsteroid: LiveData<Asteroid>
         get() = _navigateToSelectedAsteroid
 
     private val database = getDatabase(application)
     private val asteroidsRepository = AsteroidRepository(database)
-    val imageOfDay = asteroidsRepository.pictureOfDay
-    val imageOfDayDescription = asteroidsRepository.pictureOfDayDescription
-    val loadingStatus = asteroidsRepository.status
 
     init {
         refreshAsteroid()
     }
 
     val asteroid = asteroidsRepository.asteroid
+    val picOfDay = asteroidsRepository.pictureOfDay
+    val loadingStatus = asteroidsRepository.status
 
     private fun refreshAsteroid() {
         viewModelScope.launch {

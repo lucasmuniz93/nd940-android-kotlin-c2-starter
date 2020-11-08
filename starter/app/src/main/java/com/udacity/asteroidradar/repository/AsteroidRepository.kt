@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
+import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.api.*
 import com.udacity.asteroidradar.database.AsteroidDatabase
 import com.udacity.asteroidradar.database.DatabasePicture
@@ -21,7 +22,7 @@ import java.util.*
 
 class AsteroidRepository(private val database: AsteroidDatabase) {
 
-    enum class Query(){ SAVED, TODAY, WEEK }
+    enum class Query() { SAVED, TODAY, WEEK }
 
     private val _queryType: MutableLiveData<Query> = MutableLiveData(Query.WEEK)
     val queryType: LiveData<Query>
@@ -47,16 +48,8 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
     val status: LiveData<Boolean>
         get() = _status
 
-    val pictureOfDay = Transformations.map(getPicture()) {
-        it.let {
-            it.asDomainModel().url
-        }
-    }
-
-    val pictureOfDayDescription = Transformations.map(getPicture()) {
-        it.let {
-            it.asDomainModel().title
-        }
+    val pictureOfDay: LiveData<PictureOfDay> = Transformations.map(getPicture()) {
+        it.asDomainModel()
     }
 
     private fun getPicture(): LiveData<DatabasePicture> {
