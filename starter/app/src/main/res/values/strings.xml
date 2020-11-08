@@ -20,4 +20,6 @@
     <string name="this_is_nasa_s_picture_of_day_showing_nothing_yet">This is NASA\'s picture of day, showing nothing yet</string>
     <string name="nasa_picture_of_day_content_description_format">NASA\'s picture of day: %s</string>
     <string name="question_mark">Question mark to know more about absolute magnitude</string>
+    <string name="content_detail_hazardous">Image of an asteroid hazardous</string>
+    <string name="content_detail_not_hazardous">Image of an asteroid not hazardous</string>
 </resources>
