@@ -21,10 +21,10 @@ class MainViewModel(application: Application) : ViewModel() {
     private val asteroidsRepository = AsteroidRepository(database)
     val imageOfDay = asteroidsRepository.pictureOfDay
     val imageOfDayDescription = asteroidsRepository.pictureOfDayDescription
+    val loadingStatus = asteroidsRepository.status
 
     init {
         refreshAsteroid()
-        refreshPicture()
     }
 
     val asteroid = asteroidsRepository.asteroid
@@ -35,11 +35,6 @@ class MainViewModel(application: Application) : ViewModel() {
         }
     }
 
-    private fun refreshPicture() {
-        viewModelScope.launch {
-            asteroidsRepository.refreshPicture()
-        }
-    }
 
     fun displayAsteroidDetails(asteroid: Asteroid) {
         _navigateToSelectedAsteroid.value = asteroid

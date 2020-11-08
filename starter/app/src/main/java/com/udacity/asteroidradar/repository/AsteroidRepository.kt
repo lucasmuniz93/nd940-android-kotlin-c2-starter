@@ -43,6 +43,10 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
             }
         }
 
+    private val _status: MutableLiveData<Boolean> = MutableLiveData(false)
+    val status: LiveData<Boolean>
+        get() = _status
+
     val pictureOfDay = Transformations.map(getPicture()) {
         it.asDomainModel().url
     }
@@ -56,6 +60,7 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
     }
 
     suspend fun refreshAsteroids() {
+        _status.value = true
         withContext(Dispatchers.IO) {
             try {
                 val restultNetwork = Network.retrofitService.getProperties(
@@ -66,33 +71,24 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
                 val resultJSONObject = JSONObject(restultNetwork)
                 val resultParsed = parseAsteroidsJsonResult(resultJSONObject)
 
-                // Clear the database to remove old dates before insert new ones
-                database.asteroidDao.clear()
-                database.asteroidDao.insertAll(*resultParsed.asDatabaseModel())
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Log.e("Error refresh asteroid ", e.message!!)
-                }
-                e.printStackTrace()
-            }
-        }
-    }
-
-    suspend fun refreshPicture() {
-        withContext(Dispatchers.IO) {
-            try {
                 val imageofDay = Network.retrofitService.getImageOfTheDay().await()
                 // Clear the database to remove last picture
                 if (imageofDay.mediaType == "image") {
                     database.pictureDao.clear()
                     database.pictureDao.insertAll(imageofDay.asDatabaseModel())
                 }
+                _status.value = false
+                // Clear the database to remove old dates before insert new ones
+                database.asteroidDao.clear()
+                database.asteroidDao.insertAll(*resultParsed.asDatabaseModel())
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Log.e("Error refresh picture ", e.message!!)
+                    Log.e("Error refresh asteroid ", e.message!!)
+                    _status.value = false
                 }
                 e.printStackTrace()
             }
+
         }
     }
 
