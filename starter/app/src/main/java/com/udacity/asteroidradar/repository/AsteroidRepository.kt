@@ -75,8 +75,6 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
                     database.pictureDao.insertAll(imageofDay.asDatabaseModel())
                 }
                 _status.postValue(false)
-                // Clear the database to remove old dates before insert new ones
-                database.asteroidDao.clear()
                 database.asteroidDao.insertAll(*resultParsed.asDatabaseModel())
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
@@ -86,6 +84,12 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
                 e.printStackTrace()
             }
 
+        }
+    }
+
+    suspend fun removeOldDates(){
+        withContext(Dispatchers.IO){
+            database.asteroidDao.removeOldDates()
         }
     }
 

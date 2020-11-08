@@ -22,8 +22,8 @@ interface AsteroidDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg asteroid: DatabaseAsteroid)
 
-    @Query("DELETE FROM databaseasteroid")
-    fun clear()
+    @Query("DELETE FROM databaseasteroid WHERE closeApproachDate <= strftime('%s', datetime('now'));")
+    fun removeOldDates()
 }
 
 @Dao
