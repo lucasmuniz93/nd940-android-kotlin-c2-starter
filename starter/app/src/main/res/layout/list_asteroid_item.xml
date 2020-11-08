@@ -29,7 +29,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="(2015 RC)" />
+            tools:text="Asteroid Name" />
 
         <TextView
             android:id="@+id/asteroid_date"
@@ -41,7 +41,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/asteroid_codename"
             app:layout_constraintTop_toBottomOf="@+id/asteroid_codename"
-            tools:text="2020-11-01" />
+            tools:text="Asteroid date" />
 
         <ImageView
             android:id="@+id/asteroid_status_image"
@@ -49,11 +49,10 @@
             android:layout_height="30dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.945"
-            android:layout_marginLeft="250dp"
-            app:layout_constraintStart_toEndOf="@+id/asteroid_codename"
-            app:layout_constraintTop_toTopOf="@+id/asteroid_codename"
-            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.958"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.49"
             app:statusIcon="@{asteroid.potentiallyHazardous}"
             tools:srcCompat="@drawable/ic_status_potentially_hazardous" />
 
