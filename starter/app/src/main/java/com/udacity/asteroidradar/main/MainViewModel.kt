@@ -20,6 +20,7 @@ class MainViewModel(application: Application) : ViewModel() {
     private val database = getDatabase(application)
     private val asteroidsRepository = AsteroidRepository(database)
     val imageOfDay = asteroidsRepository.pictureOfDay
+    val imageOfDayDescription = asteroidsRepository.pictureOfDayDescription
 
     init {
         refreshAsteroid()

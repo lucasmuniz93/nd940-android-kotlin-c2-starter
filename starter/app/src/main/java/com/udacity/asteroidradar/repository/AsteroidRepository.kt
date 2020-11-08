@@ -8,6 +8,7 @@ import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.api.*
 import com.udacity.asteroidradar.database.AsteroidDatabase
+import com.udacity.asteroidradar.database.DatabasePicture
 import com.udacity.asteroidradar.database.asDatabaseModel
 import com.udacity.asteroidradar.database.asDomainModel
 import kotlinx.coroutines.Dispatchers
@@ -42,9 +43,16 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
             }
         }
 
-
-    val pictureOfDay = Transformations.map(database.pictureDao.getPictureUrl()) {
+    val pictureOfDay = Transformations.map(getPicture()) {
         it.asDomainModel().url
+    }
+
+    val pictureOfDayDescription = Transformations.map(getPicture()) {
+        it.asDomainModel().title
+    }
+
+    private fun getPicture(): LiveData<DatabasePicture> {
+        return database.pictureDao.getPicture()
     }
 
     suspend fun refreshAsteroids() {

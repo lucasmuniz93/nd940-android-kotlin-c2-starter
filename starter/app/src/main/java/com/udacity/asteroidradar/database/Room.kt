@@ -29,7 +29,7 @@ interface AsteroidDao {
 @Dao
 interface PictureDao {
     @Query("SELECT * FROM databasepicture")
-    fun getPictureUrl(): LiveData<DatabasePicture>
+    fun getPicture(): LiveData<DatabasePicture>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg picture: DatabasePicture)
