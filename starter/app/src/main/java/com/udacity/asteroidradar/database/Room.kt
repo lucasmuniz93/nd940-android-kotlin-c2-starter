@@ -10,10 +10,10 @@ import com.udacity.asteroidradar.Constants.DATABASE_VERSION
 */
 @Dao
 interface AsteroidDao {
-    @Query("SELECT * FROM databaseasteroid ORDER BY date(closeApproachDate) DESC")
+    @Query("SELECT * FROM databaseasteroid ORDER BY date(closeApproachDate) ASC")
     fun getAsteroid(): LiveData<List<DatabaseAsteroid>>
 
-    @Query("select * from databaseasteroid where strftime('%Y-%m-%d',closeApproachDate) >= strftime('%Y-%m-%d','now') ORDER BY date(closeApproachDate) DESC")
+    @Query("select * from databaseasteroid where strftime('%Y-%m-%d',closeApproachDate) >= strftime('%Y-%m-%d','now') ORDER BY date(closeApproachDate) ASC")
     fun getWeekAsteroids(): LiveData<List<DatabaseAsteroid>>
 
     @Query("select * from databaseasteroid where strftime('%Y-%m-%d',closeApproachDate) = strftime('%Y-%m-%d','now')")
@@ -22,7 +22,7 @@ interface AsteroidDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg asteroid: DatabaseAsteroid)
 
-    @Query("DELETE FROM databaseasteroid WHERE closeApproachDate <= strftime('%s', datetime('now'));")
+    @Query("DELETE FROM databaseasteroid WHERE closeApproachDate < strftime('%s', datetime('now'));")
     fun removeOldDates()
 }
 
