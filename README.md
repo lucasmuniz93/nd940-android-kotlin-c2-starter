@@ -77,9 +77,15 @@ This branch is going to let you start working with it. The command to check out 
 git checkout master
 ```
 
-**Step 3: Run the project and check that it compiles correctly**
+**Step 3: Insert your API_KEY into the Constants file**
+
+Open the Constants.kt in Android Studio and change the value of API_KEY to your api key value.
+
+
+**Step 4: Run the project and check that it compiles correctly**
 
 Open the project in Android Studio and click the Run ‘app’ button, check that it runs correctly and you can see the app in your device or emulator.
+
 
 ## Testing
 
