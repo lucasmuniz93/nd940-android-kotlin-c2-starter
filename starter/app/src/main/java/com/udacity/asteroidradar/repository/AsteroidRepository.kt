@@ -28,6 +28,7 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
     val queryType: LiveData<Query>
         get() = _queryType
 
+    // Apply the filter based on queryType
     val asteroid: LiveData<List<Asteroid>> =
         Transformations.switchMap(queryType) {
             when (it) {
@@ -56,6 +57,7 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
         return database.pictureDao.getPicture()
     }
 
+    // Get the asteroids and imagem from the server
     suspend fun refreshAsteroids() {
         _status.postValue(true)
         withContext(Dispatchers.IO) {
@@ -64,7 +66,7 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
                     startDate = getStartDateFormatted(),
                     endDate = getEndDateFormatted()
                 ).await()
-
+                // Convert the result into an arraylist of Asteroid
                 val resultJSONObject = JSONObject(restultNetwork)
                 val resultParsed = parseAsteroidsJsonResult(resultJSONObject)
 
@@ -83,7 +85,6 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
                 }
                 e.printStackTrace()
             }
-
         }
     }
 
@@ -92,7 +93,7 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
             database.asteroidDao.removeOldDates()
         }
     }
-
+    // Format the date
     fun getStartDateFormatted(): String {
         val calendar = Calendar.getInstance()
         val currentTime = calendar.time
