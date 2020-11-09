@@ -57,7 +57,7 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
     }
 
     suspend fun refreshAsteroids() {
-        _status.value = true
+        _status.postValue(true)
         withContext(Dispatchers.IO) {
             try {
                 val restultNetwork = Network.retrofitService.getProperties(
